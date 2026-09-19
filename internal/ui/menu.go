@@ -19,12 +19,13 @@ type AppMenu struct {
 	recentMenu  RID.NativeMenu
 	recentPaths []string
 
-	OnOpenFile    func()            // triggers native file dialog
-	OnOpenRecent  func(path string) // opens a specific recent file
-	OnNewTab      func()            // creates new tab (⌘T)
-	OnCloseTab    func()            // closes current tab (⌘W)
-	OnNewWindow   func()            // creates new window (⌘N)
-	OnOpenGateway func()            // shows gateway connection screen
+	OnOpenFile      func()            // triggers native file dialog
+	OnOpenRecent    func(path string) // opens a specific recent file
+	OnNewTab        func()            // creates new tab (⌘T)
+	OnCloseTab      func()            // closes current tab (⌘W)
+	OnNewWindow     func()            // creates new window (⌘N)
+	OnOpenGateway   func()            // shows gateway connection screen
+	OnCopyMCPConfig func()            // copies the Claude Desktop MCP config snippet
 }
 
 func (m *AppMenu) Setup() {
@@ -64,6 +65,14 @@ func (m *AppMenu) Setup() {
 			m.OnOpenGateway()
 		}
 	}, nil, nil, Input.Key(Input.KeyMaskMeta)|Input.KeyG)
+
+	// Copy Claude MCP Config — the claude_desktop_config.json entry that
+	// launches the bundled bufflehead-mcp bridge.
+	NativeMenu.AddItem(m.fileMenu, "Copy Claude MCP Config", func(tag any) {
+		if m.OnCopyMCPConfig != nil {
+			m.OnCopyMCPConfig()
+		}
+	}, nil, nil, 0)
 
 	NativeMenu.AddSeparator(m.fileMenu)
 
